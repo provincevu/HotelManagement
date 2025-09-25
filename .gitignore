@@ -1,0 +1,89 @@
+# .gitignore for Windows Forms C# project (Visual Studio)
+
+## Ignore Visual Studio temporary files, build results, and
+## common files/directories for C# Windows Forms projects
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Visual Studio Code workspace settings
+.vscode/
+
+# MonoDevelop project files
+*.pidb
+
+# Visual Studio 2015/2017/2019/2022 cache/options directory
+.vs/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored if you use package restore
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+!**/[Pp]ackages/repositories.config
+
+# NPM packages
+node_modules/
+
+# Others
+*.log
+*.tlog
+*.cache
+*.dbmdl
+*.bak
+
+# Publish output
+[Pp]ublish/
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# StyleCop
+StyleCopReport.xml
+
+# JetBrains Rider
+.idea/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Auto-generated files
+*.Generated.cs
+
+# SQL Server files
+*.mdf
+*.ldf
+
+# Backup & crash files
+*.bak
+*.swp
+
+# Temporary files
+~$*
+*.tmp
+
+# Ignore all .vsconfig files
+*.vsconfig
