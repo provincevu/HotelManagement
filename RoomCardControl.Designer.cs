@@ -29,40 +29,40 @@
             // lblRoomName
             // 
             this.lblRoomName.AutoSize = true;
-            this.lblRoomName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblRoomName.Location = new System.Drawing.Point(10, 10);
+            this.lblRoomName.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblRoomName.Location = new System.Drawing.Point(20, 10);
             this.lblRoomName.Name = "lblRoomName";
-            this.lblRoomName.Size = new System.Drawing.Size(0, 25);
+            this.lblRoomName.Size = new System.Drawing.Size(0, 32);
             this.lblRoomName.TabIndex = 0;
             // 
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(10, 40);
+            this.lblStatus.Location = new System.Drawing.Point(20, 40);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 16);
+            this.lblStatus.Size = new System.Drawing.Size(0, 22);
             this.lblStatus.TabIndex = 1;
             // 
             // lblRoomType
             // 
             this.lblRoomType.AutoSize = true;
-            this.lblRoomType.Location = new System.Drawing.Point(10, 60);
+            this.lblRoomType.Location = new System.Drawing.Point(20, 60);
             this.lblRoomType.Name = "lblRoomType";
-            this.lblRoomType.Size = new System.Drawing.Size(0, 16);
+            this.lblRoomType.Size = new System.Drawing.Size(0, 22);
             this.lblRoomType.TabIndex = 4;
             // 
             // lblPrice
             // 
             this.lblPrice.AutoSize = true;
-            this.lblPrice.Location = new System.Drawing.Point(10, 80);
+            this.lblPrice.Location = new System.Drawing.Point(20, 80);
             this.lblPrice.Name = "lblPrice";
-            this.lblPrice.Size = new System.Drawing.Size(0, 16);
+            this.lblPrice.Size = new System.Drawing.Size(0, 22);
             this.lblPrice.TabIndex = 5;
             // 
             // btnEdit
             // 
             this.btnEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnEdit.Location = new System.Drawing.Point(34, 113);
+            this.btnEdit.Location = new System.Drawing.Point(19, 113);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(60, 30);
             this.btnEdit.TabIndex = 2;
@@ -73,7 +73,7 @@
             // btnDelete
             // 
             this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnDelete.Location = new System.Drawing.Point(117, 113);
+            this.btnDelete.Location = new System.Drawing.Point(109, 113);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(60, 30);
             this.btnDelete.TabIndex = 3;
@@ -90,8 +90,10 @@
             this.Controls.Add(this.lblPrice);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnDelete);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.Margin = new System.Windows.Forms.Padding(29);
             this.Name = "RoomCardControl";
+            this.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.Size = new System.Drawing.Size(200, 140);
             this.ResumeLayout(false);
             this.PerformLayout();

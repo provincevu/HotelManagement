@@ -7,7 +7,7 @@ namespace HotelManagement
 {
     public static class DataBase
     {
-        private static string dbFile = "hotel.db";
+        private static string dbFile = "hotel1.db";
         private static string connString = $"Data Source={dbFile};Version=3;";
 
         // Bật foreign key constraints cho mọi kết nối
@@ -41,69 +41,91 @@ namespace HotelManagement
                     cmd.ExecuteNonQuery();
                 }
 
-                // Room statuses
-                string sql = @"CREATE TABLE IF NOT EXISTS RoomStatuses (
+                // RoomStatuses
+                string sqlRoomStatuses = @"CREATE TABLE IF NOT EXISTS RoomStatuses (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     StatusName TEXT NOT NULL UNIQUE
                 )";
-                using (var cmd = new SQLiteCommand(sql, con))
+                using (var cmd = new SQLiteCommand(sqlRoomStatuses, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
                 // Roles
                 string sqlRoles = @"CREATE TABLE IF NOT EXISTS Roles (
-                     RoleId INTEGER PRIMARY KEY AUTOINCREMENT,
-                     RoleName TEXT NOT NULL UNIQUE
+                    RoleId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    RoleName TEXT NOT NULL UNIQUE
                 )";
                 using (var cmd = new SQLiteCommand(sqlRoles, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
-                // Customers (UserName is PRIMARY KEY)
-                string sqlCustomers = @"CREATE TABLE IF NOT EXISTS Customers (
+                // Staff (UserName PK, RoleId FK)
+                string sqlStaff = @"CREATE TABLE IF NOT EXISTS Staff (
                     UserName TEXT PRIMARY KEY,
                     PassWord TEXT NOT NULL,
                     Name TEXT NOT NULL,
                     IdentityNumber TEXT NOT NULL UNIQUE,
                     Phone TEXT,
                     RoleId INTEGER,
-                    FOREIGN KEY(RoleId) REFERENCES Roles(RoleId)
-                        ON UPDATE CASCADE
-                        ON DELETE SET NULL
+                    FOREIGN KEY (RoleId) REFERENCES Roles(RoleId)
+                )";
+                using (var cmd = new SQLiteCommand(sqlStaff, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Sex
+                string sqlSex = @"CREATE TABLE IF NOT EXISTS Sex (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    SexName TEXT NOT NULL UNIQUE
+                )";
+                using (var cmd = new SQLiteCommand(sqlSex, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Customers (Phone PK)
+                string sqlCustomers = @"CREATE TABLE IF NOT EXISTS Customers (
+                    Name TEXT NOT NULL,
+                    Birth TEXT,
+                    SexId INTEGER,
+                    Phone TEXT PRIMARY KEY,
+                    FOREIGN KEY (SexId) REFERENCES Sex(Id)
                 )";
                 using (var cmd = new SQLiteCommand(sqlCustomers, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
-                // Rooms (có CASCADE)
+                // Rooms (StatusId là FK, không phải TEXT)
                 string sqlRooms = @"CREATE TABLE IF NOT EXISTS Rooms (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     RoomNumber TEXT NOT NULL UNIQUE,
                     RoomTypeId INTEGER NOT NULL,
-                    Status TEXT NOT NULL,
+                    StatusId INTEGER NOT NULL,
                     FOREIGN KEY(RoomTypeId) REFERENCES RoomTypes(Id)
                         ON UPDATE CASCADE
-                        ON DELETE CASCADE
+                        ON DELETE CASCADE,
+                    FOREIGN KEY(StatusId) REFERENCES RoomStatuses(Id)
                 )";
                 using (var cmd = new SQLiteCommand(sqlRooms, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
-                // Bookings (CustomerUserName là TEXT)
+                // Bookings (CustomerPhone là TEXT, FK tới Customers.Phone)
                 string sqlBookings = @"CREATE TABLE IF NOT EXISTS Bookings (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     RoomId INTEGER NOT NULL,
-                    CustomerUserName TEXT NOT NULL,
+                    CustomerPhone TEXT NOT NULL,
                     CheckInDate TEXT NOT NULL,
                     CheckOutDate TEXT NOT NULL,
                     FOREIGN KEY(RoomId) REFERENCES Rooms(Id)
                         ON UPDATE CASCADE
                         ON DELETE CASCADE,
-                    FOREIGN KEY(CustomerUserName) REFERENCES Customers(UserName)
+                    FOREIGN KEY(CustomerPhone) REFERENCES Customers(Phone)
                         ON UPDATE CASCADE
                         ON DELETE CASCADE
                 )";
@@ -112,7 +134,7 @@ namespace HotelManagement
                     cmd.ExecuteNonQuery();
                 }
 
-                // Invoices (có CASCADE)
+                // Invoices (BookingId FK)
                 string sqlInvoices = @"CREATE TABLE IF NOT EXISTS Invoices (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     BookingId INTEGER NOT NULL,
@@ -128,32 +150,11 @@ namespace HotelManagement
                 }
 
                 // --- Khởi tạo sẵn 1 Role là "super admin" và 1 tài khoản admin ---
-                // Thêm role Super Admin nếu chưa có
                 int superAdminRoleId = AddRoleIfNotExists("super admin", con);
-
-                // Thêm tài khoản admin nếu chưa có
                 AddAdminIfNotExists(superAdminRoleId, con);
             }
         }
 
-
-
-        public static void EnsureRoomStatusesTable()
-        {
-            using (var con = new SQLiteConnection(connString))
-            {
-                con.Open();
-                EnableForeignKeys(con);
-                string sql = @"CREATE TABLE IF NOT EXISTS RoomStatuses (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            StatusName TEXT NOT NULL UNIQUE
-        )";
-                using (var cmd = new SQLiteCommand(sql, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
 
         // ---- ROLE ----
         public static int AddRole(string roleName)
@@ -205,23 +206,24 @@ namespace HotelManagement
         private static void AddAdminIfNotExists(int roleId, SQLiteConnection con)
         {
             EnableForeignKeys(con);
-            string checkSql = "SELECT COUNT(*) FROM Customers WHERE UserName=@u";
+            // Kiểm tra xem trong bảng Staff đã có user admin chưa
+            string checkSql = "SELECT COUNT(*) FROM Staff WHERE UserName=@u";
             using (var cmd = new SQLiteCommand(checkSql, con))
             {
                 cmd.Parameters.AddWithValue("@u", "admin");
                 long count = (long)cmd.ExecuteScalar();
                 if (count > 0) return; // Đã có admin
 
-                // Thông tin ngẫu nhiên cho các trường khác
-                string sql = @"INSERT INTO Customers(UserName, PassWord, Name, IdentityNumber, Phone, RoleId)
-                               VALUES(@user, @pass, @name, @idnum, @phone, @role)";
+                // Thêm admin vào Staff
+                string sql = @"INSERT INTO Staff(UserName, PassWord, Name, IdentityNumber, Phone, RoleId)
+                       VALUES(@user, @pass, @name, @idnum, @phone, @role)";
                 using (var insert = new SQLiteCommand(sql, con))
                 {
                     insert.Parameters.AddWithValue("@user", "admin");
                     insert.Parameters.AddWithValue("@pass", "admin");
-                    insert.Parameters.AddWithValue("@name", "Quản trị viên");
-                    insert.Parameters.AddWithValue("@idnum", "ADM" + new Random().Next(1000, 9999));
-                    insert.Parameters.AddWithValue("@phone", "09" + new Random().Next(10000000, 99999999));
+                    insert.Parameters.AddWithValue("@name", "TinhVu");
+                    insert.Parameters.AddWithValue("@idnum", "ADMIN");
+                    insert.Parameters.AddWithValue("@phone", "09");
                     insert.Parameters.AddWithValue("@role", roleId);
                     insert.ExecuteNonQuery();
                 }
@@ -297,24 +299,20 @@ namespace HotelManagement
             return result;
         }
 
-        public static List<Dictionary<string, object>> GetAllCustomers()
+        public static List<string> GetAllCustomerNames()
         {
-            var result = new List<Dictionary<string, object>>();
+            var result = new List<string>();
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"SELECT Customers.*, Roles.RoleName
-                               FROM Customers LEFT JOIN Roles ON Customers.RoleId = Roles.RoleId";
+                string sql = @"SELECT Name FROM Customers ORDER BY Name ASC";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var row = new Dictionary<string, object>();
-                        for (int i = 0; i < reader.FieldCount; i++)
-                            row[reader.GetName(i)] = reader.GetValue(i);
-                        result.Add(row);
+                        result.Add(reader.GetString(0));
                     }
                 }
             }
@@ -329,9 +327,9 @@ namespace HotelManagement
                 con.Open();
                 EnableForeignKeys(con);
                 string sql = @"SELECT Bookings.*, Rooms.RoomNumber, Customers.Name AS CustomerName
-                               FROM Bookings
-                               JOIN Rooms ON Bookings.RoomId = Rooms.Id
-                               JOIN Customers ON Bookings.CustomerUserName = Customers.UserName";
+                       FROM Bookings
+                       JOIN Rooms ON Bookings.RoomId = Rooms.Id
+                       JOIN Customers ON Bookings.CustomerPhone = Customers.Phone";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -354,9 +352,9 @@ namespace HotelManagement
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"SELECT Invoices.*, Bookings.RoomId, Bookings.CustomerUserName
-                               FROM Invoices
-                               JOIN Bookings ON Invoices.BookingId = Bookings.Id";
+                string sql = @"SELECT Invoices.*, Bookings.RoomId, Bookings.CustomerPhone
+                       FROM Invoices
+                       JOIN Bookings ON Invoices.BookingId = Bookings.Id";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -408,18 +406,18 @@ namespace HotelManagement
             }
         }
 
-        public static bool AddRoom(string roomNumber, int roomTypeId, string status)
+        public static bool AddRoom(string roomNumber, int roomTypeId, int statusId)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "INSERT INTO Rooms(RoomNumber, RoomTypeId, Status) VALUES(@num, @typeId, @status)";
+                string sql = "INSERT INTO Rooms(RoomNumber, RoomTypeId, StatusId) VALUES(@num, @typeId, @statusId)";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@num", roomNumber);
                     cmd.Parameters.AddWithValue("@typeId", roomTypeId);
-                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@statusId", statusId);
 
                     try { cmd.ExecuteNonQuery(); return true; }
                     catch { return false; }
@@ -427,13 +425,13 @@ namespace HotelManagement
             }
         }
 
-        public static bool AddCustomer(string username, string password, string name, string identityNumber, string phone, int? roleId)
+        public static bool AddStaff(string username, string password, string name, string identityNumber, string phone, int? roleId)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "INSERT INTO Customers(UserName, PassWord, Name, IdentityNumber, Phone, RoleId) VALUES(@username, @password, @name, @idnum, @phone, @roleId)";
+                string sql = "INSERT INTO Staff(UserName, PassWord, Name, IdentityNumber, Phone, RoleId) VALUES(@username, @password, @name, @idnum, @phone, @roleId)";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -452,18 +450,42 @@ namespace HotelManagement
             }
         }
 
-        public static bool AddBooking(int roomId, string customerUserName, string checkIn, string checkOut)
+
+        public static bool AddCustomer(string name, string birth, int? sexId, string phone)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"INSERT INTO Bookings(RoomId, CustomerUserName, CheckInDate, CheckOutDate)
-                               VALUES(@room, @cust, @in, @out)";
+                string sql = "INSERT INTO Customers(Name, Birth, SexId, Phone) VALUES(@name, @birth, @sexId, @phone)";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@birth", birth);
+                    if (sexId.HasValue)
+                        cmd.Parameters.AddWithValue("@sexId", sexId.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@sexId", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@phone", phone);
+
+                    try { cmd.ExecuteNonQuery(); return true; }
+                    catch { return false; }
+                }
+            }
+        }
+
+        public static bool AddBooking(int roomId, string customerPhone, string checkIn, string checkOut)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = @"INSERT INTO Bookings(RoomId, CustomerPhone, CheckInDate, CheckOutDate)
+                       VALUES(@room, @cust, @in, @out)";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@room", roomId);
-                    cmd.Parameters.AddWithValue("@cust", customerUserName);
+                    cmd.Parameters.AddWithValue("@cust", customerPhone);
                     cmd.Parameters.AddWithValue("@in", checkIn);
                     cmd.Parameters.AddWithValue("@out", checkOut);
 
@@ -514,18 +536,18 @@ namespace HotelManagement
             }
         }
 
-        public static bool UpdateRoom(int id, string roomNumber, int roomTypeId, string status)
+        public static bool UpdateRoom(int id, string roomNumber, int roomTypeId, int statusId)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "UPDATE Rooms SET RoomNumber=@num, RoomTypeId=@typeId, Status=@status WHERE Id=@id";
+                string sql = "UPDATE Rooms SET RoomNumber=@num, RoomTypeId=@typeId, StatusId=@statusId WHERE Id=@id";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@num", roomNumber);
                     cmd.Parameters.AddWithValue("@typeId", roomTypeId);
-                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@statusId", statusId);
                     cmd.Parameters.AddWithValue("@id", id);
 
                     try { return cmd.ExecuteNonQuery() > 0; }
@@ -534,13 +556,37 @@ namespace HotelManagement
             }
         }
 
-        public static bool UpdateCustomer(string username, string password, string name, string identityNumber, string phone, int? roleId)
+        public static bool UpdateCustomer(string name, string birth, int? sexId, string phone)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "UPDATE Customers SET PassWord=@password, Name=@name, IdentityNumber=@idnum, Phone=@phone, RoleId=@roleId WHERE UserName=@username";
+                string sql = "UPDATE Customers SET Name=@name, Birth=@birth, SexId=@sexId WHERE Phone=@phone";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@birth", birth);
+                    if (sexId.HasValue)
+                        cmd.Parameters.AddWithValue("@sexId", sexId.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@sexId", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@phone", phone);
+
+                    try { return cmd.ExecuteNonQuery() > 0; }
+                    catch { return false; }
+                }
+            }
+        }
+
+
+        public static bool UpdateStaff(string username, string password, string name, string identityNumber, string phone, int? roleId)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = "UPDATE Staff SET PassWord=@password, Name=@name, IdentityNumber=@idnum, Phone=@phone, RoleId=@roleId WHERE UserName=@username";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -559,17 +605,17 @@ namespace HotelManagement
             }
         }
 
-        public static bool UpdateBooking(int id, int roomId, string customerUserName, string checkIn, string checkOut)
+        public static bool UpdateBooking(int id, int roomId, string customerPhone, string checkIn, string checkOut)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"UPDATE Bookings SET RoomId=@room, CustomerUserName=@cust, CheckInDate=@in, CheckOutDate=@out WHERE Id=@id";
+                string sql = @"UPDATE Bookings SET RoomId=@room, CustomerPhone=@cust, CheckInDate=@in, CheckOutDate=@out WHERE Id=@id";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@room", roomId);
-                    cmd.Parameters.AddWithValue("@cust", customerUserName);
+                    cmd.Parameters.AddWithValue("@cust", customerPhone);
                     cmd.Parameters.AddWithValue("@in", checkIn);
                     cmd.Parameters.AddWithValue("@out", checkOut);
                     cmd.Parameters.AddWithValue("@id", id);
@@ -634,13 +680,29 @@ namespace HotelManagement
             }
         }
 
-        public static bool DeleteCustomer(string username)
+        public static bool DeleteCustomer(string phone)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "DELETE FROM Customers WHERE UserName=@username";
+                string sql = "DELETE FROM Customers WHERE Phone=@phone";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@phone", phone);
+                    try { return cmd.ExecuteNonQuery() > 0; }
+                    catch { return false; }
+                }
+            }
+        }
+
+        public static bool DeleteStaff(string username)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = "DELETE FROM Staff WHERE UserName=@username";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -684,13 +746,13 @@ namespace HotelManagement
 
         // ---- LOGIN ----
 
-        public static bool CheckLogin(string username, string password)
+        public static bool CheckStaffLogin(string username, string password)
         {
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = "SELECT COUNT(*) FROM Customers WHERE UserName=@user AND PassWord=@pass";
+                string sql = "SELECT COUNT(*) FROM Staff WHERE UserName=@user AND PassWord=@pass";
                 using (var cmd = new SQLiteCommand(sql, con))
                 {
                     cmd.Parameters.AddWithValue("@user", username);
@@ -702,9 +764,9 @@ namespace HotelManagement
         }
 
         // ---- REGISTER ----
-        public static bool RegisterUser(string username, string password, string name, string identityNumber, string phone)
+        public static bool RegisterStaff(string username, string password, string name, string identityNumber, string phone)
         {
-            return AddCustomer(username, password, name, identityNumber, phone, null);
+            return AddStaff(username, password, name, identityNumber, phone, null);
         }
     }
 }

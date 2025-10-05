@@ -30,7 +30,7 @@
 //                return;
 //            }
 
-//            if (DataBase.RegisterUser(username, password))
+//            if (DataBase.RegisterStaff(username, password))
 //            {
 //                MessageBox.Show("Đăng ký thành công! Vui lòng đăng nhập.");
 //                this.Close();
