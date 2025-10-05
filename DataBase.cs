@@ -41,6 +41,16 @@ namespace HotelManagement
                     cmd.ExecuteNonQuery();
                 }
 
+                // Room statuses
+                string sql = @"CREATE TABLE IF NOT EXISTS RoomStatuses (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    StatusName TEXT NOT NULL UNIQUE
+                )";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
                 // Roles
                 string sqlRoles = @"CREATE TABLE IF NOT EXISTS Roles (
                      RoleId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -116,6 +126,105 @@ namespace HotelManagement
                 {
                     cmd.ExecuteNonQuery();
                 }
+
+                // --- Khởi tạo sẵn 1 Role là "super admin" và 1 tài khoản admin ---
+                // Thêm role Super Admin nếu chưa có
+                int superAdminRoleId = AddRoleIfNotExists("super admin", con);
+
+                // Thêm tài khoản admin nếu chưa có
+                AddAdminIfNotExists(superAdminRoleId, con);
+            }
+        }
+
+
+
+        public static void EnsureRoomStatusesTable()
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = @"CREATE TABLE IF NOT EXISTS RoomStatuses (
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            StatusName TEXT NOT NULL UNIQUE
+        )";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ---- ROLE ----
+        public static int AddRole(string roleName)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = "INSERT INTO Roles(RoleName) VALUES(@name); SELECT last_insert_rowid();";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@name", roleName);
+                    try
+                    {
+                        object id = cmd.ExecuteScalar();
+                        return Convert.ToInt32(id);
+                    }
+                    catch
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
+
+        // Thêm role nếu chưa tồn tại, trả về RoleId
+        private static int AddRoleIfNotExists(string roleName, SQLiteConnection con)
+        {
+            EnableForeignKeys(con);
+            string checkSql = "SELECT RoleId FROM Roles WHERE RoleName=@name";
+            using (var checkCmd = new SQLiteCommand(checkSql, con))
+            {
+                checkCmd.Parameters.AddWithValue("@name", roleName);
+                var result = checkCmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                    return Convert.ToInt32(result);
+
+                string insertSql = "INSERT INTO Roles(RoleName) VALUES(@name); SELECT last_insert_rowid();";
+                using (var insertCmd = new SQLiteCommand(insertSql, con))
+                {
+                    insertCmd.Parameters.AddWithValue("@name", roleName);
+                    object id = insertCmd.ExecuteScalar();
+                    return Convert.ToInt32(id);
+                }
+            }
+        }
+
+        // Thêm tài khoản admin nếu chưa có
+        private static void AddAdminIfNotExists(int roleId, SQLiteConnection con)
+        {
+            EnableForeignKeys(con);
+            string checkSql = "SELECT COUNT(*) FROM Customers WHERE UserName=@u";
+            using (var cmd = new SQLiteCommand(checkSql, con))
+            {
+                cmd.Parameters.AddWithValue("@u", "admin");
+                long count = (long)cmd.ExecuteScalar();
+                if (count > 0) return; // Đã có admin
+
+                // Thông tin ngẫu nhiên cho các trường khác
+                string sql = @"INSERT INTO Customers(UserName, PassWord, Name, IdentityNumber, Phone, RoleId)
+                               VALUES(@user, @pass, @name, @idnum, @phone, @role)";
+                using (var insert = new SQLiteCommand(sql, con))
+                {
+                    insert.Parameters.AddWithValue("@user", "admin");
+                    insert.Parameters.AddWithValue("@pass", "admin");
+                    insert.Parameters.AddWithValue("@name", "Quản trị viên");
+                    insert.Parameters.AddWithValue("@idnum", "ADM" + new Random().Next(1000, 9999));
+                    insert.Parameters.AddWithValue("@phone", "09" + new Random().Next(10000000, 99999999));
+                    insert.Parameters.AddWithValue("@role", roleId);
+                    insert.ExecuteNonQuery();
+                }
             }
         }
 
@@ -162,6 +271,26 @@ namespace HotelManagement
                         for (int i = 0; i < reader.FieldCount; i++)
                             row[reader.GetName(i)] = reader.GetValue(i);
                         result.Add(row);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public static List<string> GetAllRoomStatuses()
+        {
+            var result = new List<string>();
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = "SELECT StatusName FROM RoomStatuses";
+                using (var cmd = new SQLiteCommand(sql, con))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(reader.GetString(0));
                     }
                 }
             }
@@ -257,6 +386,22 @@ namespace HotelManagement
                     cmd.Parameters.AddWithValue("@typeName", typeName);
                     cmd.Parameters.AddWithValue("@price", price);
 
+                    try { cmd.ExecuteNonQuery(); return true; }
+                    catch { return false; }
+                }
+            }
+        }
+
+        public static bool AddRoomStatus(string statusName)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                EnableForeignKeys(con);
+                string sql = "INSERT INTO RoomStatuses(StatusName) VALUES(@statusName)";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@statusName", statusName);
                     try { cmd.ExecuteNonQuery(); return true; }
                     catch { return false; }
                 }

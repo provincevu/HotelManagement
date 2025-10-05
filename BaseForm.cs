@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using HotelManagement; // Add this line, replace 'YourNamespace' with the actual namespace where DataBase is defined
 
 namespace HotelManagement
 {

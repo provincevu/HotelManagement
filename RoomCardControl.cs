@@ -12,7 +12,7 @@ namespace HotelManagement
         public RoomCardControl()
         {
             InitializeComponent();
-            this.Size = new Size(200, 120);
+            this.Size = new Size(200, 150);
             this.Margin = new Padding(15);
         }
 
@@ -27,13 +27,13 @@ namespace HotelManagement
             // Đổi màu theo trạng thái
             switch (status)
             {
-                case "Trống":
+                case "trống":
                     this.BackColor = Color.LightSkyBlue;
                     break;
-                case "Đang ở":
+                case "đang ở":
                     this.BackColor = Color.LightGreen;
                     break;
-                case "Bảo trì":
+                case "đang bảo trì":
                     this.BackColor = Color.LightSalmon;
                     break;
                 default:

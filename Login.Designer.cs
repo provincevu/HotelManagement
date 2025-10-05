@@ -6,7 +6,6 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.LinkLabel linkRegister;
         private System.Windows.Forms.Label lblTitle;
 
         protected override void Dispose(bool disposing)
@@ -20,7 +19,6 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
-            this.linkRegister = new System.Windows.Forms.LinkLabel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -55,16 +53,6 @@
             this.btnLogin.Text = "Đăng nhập";
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
-            // linkRegister
-            // 
-            this.linkRegister.Location = new System.Drawing.Point(50, 190);
-            this.linkRegister.Name = "linkRegister";
-            this.linkRegister.Size = new System.Drawing.Size(130, 23);
-            this.linkRegister.TabIndex = 4;
-            this.linkRegister.TabStop = true;
-            this.linkRegister.Text = "Đăng ký";
-            this.linkRegister.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkRegister_LinkClicked);
-            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -78,12 +66,11 @@
             // LoginForm
             // 
             this.AcceptButton = this.btnLogin;
-            this.ClientSize = new System.Drawing.Size(300, 240);
+            this.ClientSize = new System.Drawing.Size(300, 200);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.btnLogin);
-            this.Controls.Add(this.linkRegister);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.Name = "LoginForm";
             this.Text = "Đăng nhập";

@@ -19,14 +19,15 @@ namespace HotelManagement
         private void LoadRoomsFromDatabase()
         {
             allRooms.Clear();
-            var roomDicts = DataBase.GetAllRooms();
+            // Lấy danh sách phòng với đầy đủ thông tin loại phòng và trạng thái
+            var roomDicts = DataBase.GetAllRooms(); // hàm này phải JOIN RoomTypes và RoomStatuses
             foreach (var dict in roomDicts)
             {
                 allRooms.Add(new RoomModel
                 {
                     Id = Convert.ToInt32(dict["Id"]),
                     Name = dict["RoomNumber"].ToString(),
-                    Status = dict["Status"].ToString(),
+                    Status = dict.ContainsKey("StatusName") ? dict["StatusName"].ToString() : dict["Status"].ToString(),
                     RoomType = dict.ContainsKey("TypeName") ? dict["TypeName"].ToString() : "",
                     Price = dict.ContainsKey("Price") ? Convert.ToDouble(dict["Price"]) : 0
                 });
@@ -66,10 +67,7 @@ namespace HotelManagement
             {
                 if (addRoomForm.ShowDialog() == DialogResult.OK)
                 {
-                    // Sau khi nhập thông tin, bạn sẽ lấy dữ liệu từ addRoomForm để thêm phòng
-                    // Ví dụ:
-                    // DataBase.AddRoom(addRoomForm.RoomNumber, addRoomForm.RoomTypeId, addRoomForm.Status);
-                    // LoadRoomsFromDatabase();
+                    LoadRoomsFromDatabase();
                 }
             }
         }

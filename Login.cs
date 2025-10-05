@@ -30,14 +30,6 @@ namespace HotelManagement
             }
         }
 
-        private void linkRegister_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // Chuyển sang form đăng ký
-            this.Hide();
-            RegisterForm reg = new RegisterForm();
-            reg.ShowDialog();
-            this.Show();
-        }
 
         private void txtUsername_Enter(object sender, EventArgs e)
         {
