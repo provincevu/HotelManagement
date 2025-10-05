@@ -31,8 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.roomManageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.listRoomMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.priceMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.customerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.staffMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.billMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,9 +40,9 @@
             this.logOutBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.userNameLabel = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -72,26 +70,11 @@
             // 
             // roomManageMenuItem
             // 
-            this.roomManageMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.listRoomMenu,
-            this.priceMenu});
             this.roomManageMenuItem.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.roomManageMenuItem.Name = "roomManageMenuItem";
             this.roomManageMenuItem.Padding = new System.Windows.Forms.Padding(20);
             this.roomManageMenuItem.Size = new System.Drawing.Size(221, 72);
             this.roomManageMenuItem.Text = "Quản lý phòng";
-            // 
-            // listRoomMenu
-            // 
-            this.listRoomMenu.Name = "listRoomMenu";
-            this.listRoomMenu.Size = new System.Drawing.Size(250, 32);
-            this.listRoomMenu.Text = "Danh sách phòng";
-            // 
-            // priceMenu
-            // 
-            this.priceMenu.Name = "priceMenu";
-            this.priceMenu.Size = new System.Drawing.Size(250, 32);
-            this.priceMenu.Text = "Bảng giá dịch vụ";
             // 
             // customerMenu
             // 
@@ -190,10 +173,6 @@
             this.userNameLabel.TabIndex = 4;
             this.userNameLabel.Text = "label1";
             // 
-            // timer1
-            // 
-            this.timer1.Interval = 1000;
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::HotelManagement.Properties.Resources.online;
@@ -215,6 +194,10 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 2;
             this.pictureBox2.TabStop = false;
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
             // 
             // BaseForm
             // 
@@ -244,8 +227,6 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem roomManageMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem listRoomMenu;
-        private System.Windows.Forms.ToolStripMenuItem priceMenu;
         private System.Windows.Forms.ToolStripMenuItem customerMenu;
         private System.Windows.Forms.ToolStripMenuItem staffMenu;
         private System.Windows.Forms.ToolStripMenuItem billMenu;

@@ -16,7 +16,7 @@ namespace HotelManagement
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Text.Trim();
 
-            if (DataBase.CheckLogin(username, password))
+            if (DataBase.CheckStaffLogin(username, password))
             {
                 // Đăng nhập thành công, chuyển sang trang chủ
                 this.Hide();

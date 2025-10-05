@@ -59,9 +59,9 @@ namespace HotelManagement
                 return;
             }
             int roomTypeId = ((ComboBoxItem)comboBoxRoomType.SelectedItem).Value;
-            string status = comboBoxStatus.SelectedItem.ToString();
+            int statusId = ((ComboBoxItem)comboBoxStatus.SelectedItem).Value;
 
-            bool result = DataBase.AddRoom(roomNumber, roomTypeId, status);
+            bool result = DataBase.AddRoom(roomNumber, roomTypeId, statusId);
             if (result)
             {
                 MessageBox.Show("Thêm thành công!");
