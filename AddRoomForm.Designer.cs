@@ -69,6 +69,16 @@
             this.comboBoxRoomType.Size = new System.Drawing.Size(200, 24);
             this.comboBoxRoomType.TabIndex = 4;
             // 
+            // btnAddRoomType
+            // 
+            this.btnAddRoomType.Location = new System.Drawing.Point(350, 67);
+            this.btnAddRoomType.Name = "btnAddRoomType";
+            this.btnAddRoomType.Size = new System.Drawing.Size(99, 24);
+            this.btnAddRoomType.TabIndex = 9;
+            this.btnAddRoomType.Text = "Thêm loại..";
+            this.btnAddRoomType.UseVisualStyleBackColor = true;
+            this.btnAddRoomType.Click += new System.EventHandler(this.btnAddRoomType_Click);
+            // 
             // comboBoxStatus
             // 
             this.comboBoxStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -77,6 +87,17 @@
             this.comboBoxStatus.Name = "comboBoxStatus";
             this.comboBoxStatus.Size = new System.Drawing.Size(200, 24);
             this.comboBoxStatus.TabIndex = 5;
+            // 
+            // linkAddStatus
+            // 
+            this.linkAddStatus.AutoSize = true;
+            this.linkAddStatus.Location = new System.Drawing.Point(350, 110);
+            this.linkAddStatus.Name = "linkAddStatus";
+            this.linkAddStatus.Size = new System.Drawing.Size(99, 16);
+            this.linkAddStatus.TabIndex = 8;
+            this.linkAddStatus.TabStop = true;
+            this.linkAddStatus.Text = "Thêm trạng thái";
+            this.linkAddStatus.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAddStatus_LinkClicked);
             // 
             // btnAdd
             // 
@@ -97,27 +118,6 @@
             this.btnCancel.Text = "Thoát";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // linkAddStatus
-            // 
-            this.linkAddStatus.AutoSize = true;
-            this.linkAddStatus.Location = new System.Drawing.Point(350, 110);
-            this.linkAddStatus.Name = "linkAddStatus";
-            this.linkAddStatus.Size = new System.Drawing.Size(99, 16);
-            this.linkAddStatus.TabIndex = 8;
-            this.linkAddStatus.TabStop = true;
-            this.linkAddStatus.Text = "Thêm trạng thái";
-            this.linkAddStatus.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAddStatus_LinkClicked);
-            // 
-            // btnAddRoomType
-            // 
-            this.btnAddRoomType.Location = new System.Drawing.Point(350, 67);
-            this.btnAddRoomType.Name = "btnAddRoomType";
-            this.btnAddRoomType.Size = new System.Drawing.Size(99, 24);
-            this.btnAddRoomType.TabIndex = 9;
-            this.btnAddRoomType.Text = "Thêm loại..";
-            this.btnAddRoomType.UseVisualStyleBackColor = true;
-            this.btnAddRoomType.Click += new System.EventHandler(this.btnAddRoomType_Click);
             // 
             // AddRoomForm
             // 

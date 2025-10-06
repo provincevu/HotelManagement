@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Windows.Forms;
 
 namespace HotelManagement
@@ -23,7 +22,7 @@ namespace HotelManagement
                 comboBoxRoomType.Items.Add(new ComboBoxItem
                 {
                     Text = rt["TypeName"].ToString() + $" (Giá: {rt["Price"]})",
-                    Value = (int)(long)rt["Id"]
+                    Value = ParseId(rt["Id"])
                 });
             }
             if (comboBoxRoomType.Items.Count > 0)
@@ -33,11 +32,36 @@ namespace HotelManagement
         private void LoadRoomStatuses()
         {
             comboBoxStatus.Items.Clear();
-            var statuses = DataBase.GetAllRoomStatuses();
+            var statuses = DataBase.GetAllRoomStatuses(); 
             foreach (var status in statuses)
-                comboBoxStatus.Items.Add(status);
+            {
+                comboBoxStatus.Items.Add(new ComboBoxItem
+                {
+                    Text = status.StatusName,
+                    Value = status.Id
+                });
+            }
             if (comboBoxStatus.Items.Count > 0)
                 comboBoxStatus.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Đảm bảo ép kiểu ID an toàn cho mọi trường hợp: string, int, long, v.v.
+        /// </summary>
+        private int ParseId(object idObj)
+        {
+            if (idObj == null || idObj is DBNull) return -1;
+            if (idObj is int i) return i;
+            if (idObj is long l) return Convert.ToInt32(l);
+            if (idObj is string s && int.TryParse(s, out int result)) return result;
+            try
+            {
+                return Convert.ToInt32(idObj);
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

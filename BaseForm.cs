@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace HotelManagement
 {
@@ -32,7 +33,7 @@ namespace HotelManagement
             this.Size = new Size(1250, 648);
 
             // Hiển thị Rooms lần đầu khi vào form
-            showRooms();
+            ShowUserControl(new Rooms());
 
             userNameLabel.Text = "Xin chào, " + username;
             timeLabel.Text = "Hôm nay: " + DateTime.Now.ToString("dd / MM / yyyy") + "  |  " + DateTime.Now.ToString("HH : mm : ss");
@@ -47,23 +48,32 @@ namespace HotelManagement
             timeLabel.Text = "Hôm nay: " + DateTime.Now.ToString("dd / MM / yyyy") + "  |  " + DateTime.Now.ToString("HH : mm : ss");
         }
 
-        private void showRooms()
+        /// <summary>
+        /// Hiển thị UserControl lên Panel2 của splitContainer1
+        /// </summary>
+        private void ShowUserControl(UserControl control)
         {
             splitContainer1.Panel2.Controls.Clear();
-            var roomsUC = new Rooms();
-            roomsUC.Dock = DockStyle.Fill;
-            splitContainer1.Panel2.Controls.Add(roomsUC);
+            control.Dock = DockStyle.Fill;
+            splitContainer1.Panel2.Controls.Add(control);
         }
 
-        // Xử lý khi click menu: đổi menu được chọn và refresh lại menu
+        // Xử lý khi click menu: đổi menu được chọn và refresh lại menu + show UC
         private void MenuItem_Click(object sender, EventArgs e)
         {
             selectedMenuItem = sender as ToolStripMenuItem;
             menuStrip1.Invalidate(); // Vẽ lại menu để cập nhật màu
-            // Bạn có thể show UserControl tương ứng ở đây nếu muốn
-            // if (selectedMenuItem == roomManageMenuItem) showRooms();
-            // else if (selectedMenuItem == customerMenu) showCustomers();
-            // ...
+
+            if (selectedMenuItem == roomManageMenuItem)
+                ShowUserControl(new Rooms());
+            //else if (selectedMenuItem == customerMenu)
+            //    ShowUserControl(new Customers());
+            //else if (selectedMenuItem == staffMenu)
+            //    ShowUserControl(new Staffs());
+            //else if (selectedMenuItem == billMenu)
+            //    ShowUserControl(new Bills());
+            //else if (selectedMenuItem == dashboardMenu)
+            //    ShowUserControl(new Dashboard());
         }
     }
 

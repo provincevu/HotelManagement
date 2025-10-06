@@ -25,11 +25,11 @@ namespace HotelManagement
             {
                 allRooms.Add(new RoomModel
                 {
-                    Id = Convert.ToInt32(dict["Id"]),
-                    Name = dict["RoomNumber"].ToString(),
-                    Status = dict.ContainsKey("StatusName") ? dict["StatusName"].ToString() : dict["Status"].ToString(),
-                    RoomType = dict.ContainsKey("TypeName") ? dict["TypeName"].ToString() : "",
-                    Price = dict.ContainsKey("Price") ? Convert.ToDouble(dict["Price"]) : 0
+                    Id = GetIntValue(dict, "Id"),
+                    Name = GetStringValue(dict, "RoomNumber"),
+                    Status = dict.ContainsKey("StatusName") ? GetStringValue(dict, "StatusName") : GetStringValue(dict, "Status"),
+                    RoomType = GetStringValue(dict, "TypeName"),
+                    Price = GetDoubleValue(dict, "Price")
                 });
             }
             RenderRooms(allRooms);
@@ -48,6 +48,7 @@ namespace HotelManagement
                     // Xử lý sửa phòng (ví dụ mở dialog sửa, cập nhật CSDL và reload)
                     MessageBox.Show($"Sửa: {room.Name}");
                     // Sau khi sửa, gọi lại LoadRoomsFromDatabase();
+                    LoadRoomsFromDatabase();
                 };
                 card.DeleteClicked += (s, e) =>
                 {
@@ -77,6 +78,39 @@ namespace HotelManagement
             string keyword = txtSearch.Text.Trim().ToLower();
             var filtered = allRooms.Where(r => r.Name.ToLower().Contains(keyword)).ToList();
             RenderRooms(filtered);
+        }
+
+        // Helper methods to safely get values from dictionary
+        private int GetIntValue(Dictionary<string, object> dict, string key)
+        {
+            if (dict.TryGetValue(key, out var v) && v != null && v != DBNull.Value)
+            {
+                if (v is int i) return i;
+                if (v is long l) return Convert.ToInt32(l);
+                if (int.TryParse(v.ToString(), out int result)) return result;
+            }
+            return 0;
+        }
+
+        private string GetStringValue(Dictionary<string, object> dict, string key)
+        {
+            if (dict.TryGetValue(key, out var v) && v != null && v != DBNull.Value)
+                return v.ToString();
+            return "";
+        }
+
+        private double GetDoubleValue(Dictionary<string, object> dict, string key)
+        {
+            if (dict.TryGetValue(key, out var v) && v != null && v != DBNull.Value)
+            {
+                if (v is double d) return d;
+                if (v is float f) return Convert.ToDouble(f);
+                if (v is decimal m) return Convert.ToDouble(m);
+                if (v is int i) return Convert.ToDouble(i);
+                if (v is long l) return Convert.ToDouble(l);
+                if (double.TryParse(v.ToString(), out double result)) return result;
+            }
+            return 0;
         }
     }
 

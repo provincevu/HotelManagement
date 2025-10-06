@@ -239,8 +239,10 @@ namespace HotelManagement
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"SELECT Rooms.*, RoomTypes.TypeName, RoomTypes.Price
-                               FROM Rooms JOIN RoomTypes ON Rooms.RoomTypeId = RoomTypes.Id";
+                string sql = @"SELECT Rooms.*, RoomTypes.TypeName, RoomTypes.Price, RoomStatuses.StatusName
+                       FROM Rooms
+                       JOIN RoomTypes ON Rooms.RoomTypeId = RoomTypes.Id
+                       JOIN RoomStatuses ON Rooms.StatusId = RoomStatuses.Id";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -279,40 +281,29 @@ namespace HotelManagement
             return result;
         }
 
-        public static List<string> GetAllRoomStatuses()
+        public class RoomStatusModel
         {
-            var result = new List<string>();
-            using (var con = new SQLiteConnection(connString))
-            {
-                con.Open();
-                EnableForeignKeys(con);
-                string sql = "SELECT StatusName FROM RoomStatuses";
-                using (var cmd = new SQLiteCommand(sql, con))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(reader.GetString(0));
-                    }
-                }
-            }
-            return result;
+            public int Id { get; set; }
+            public string StatusName { get; set; }
         }
-
-        public static List<string> GetAllCustomerNames()
+        public static List<RoomStatusModel> GetAllRoomStatuses()
         {
-            var result = new List<string>();
+            var result = new List<RoomStatusModel>();
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"SELECT Name FROM Customers ORDER BY Name ASC";
+                string sql = "SELECT Id, StatusName FROM RoomStatuses";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        result.Add(reader.GetString(0));
+                        result.Add(new RoomStatusModel
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            StatusName = reader["StatusName"].ToString()
+                        });
                     }
                 }
             }
