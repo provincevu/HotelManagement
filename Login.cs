@@ -22,7 +22,6 @@ namespace HotelManagement
                 this.Hide();
                 BaseForm home = new BaseForm(username);
                 home.ShowDialog();
-                this.Close();
             }
             else
             {

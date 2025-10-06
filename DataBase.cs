@@ -786,6 +786,23 @@ namespace HotelManagement
             }
         }
 
+        public static bool IsSuperAdmin(string userName)
+        {
+            using (var con = new SQLiteConnection("Data Source=hotel.db;Version=3;"))
+            {
+                con.Open();
+                string sql = @"SELECT r.RoleName
+                       FROM Staff s JOIN Roles r ON s.RoleId = r.RoleId
+                       WHERE s.UserName = @u";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@u", userName);
+                    var role = cmd.ExecuteScalar();
+                    return (role != null && role.ToString().Trim().ToLower() == "super admin");
+                }
+            }
+        }
+
         // ---- REGISTER ----
         public static bool RegisterStaff(string username, string password, string name, string identityNumber, string phone)
         {

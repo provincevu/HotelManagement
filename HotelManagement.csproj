@@ -72,6 +72,12 @@
     <Compile Include="abc.Designer.cs">
       <DependentUpon>abc.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddRoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddRoleForm.Designer.cs">
+      <DependentUpon>AddRoleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddRoomForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +134,12 @@
     <Compile Include="Rooms.Designer.cs">
       <DependentUpon>Rooms.cs</DependentUpon>
     </Compile>
+    <Compile Include="StaffManagerForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StaffManagerForm.Designer.cs">
+      <DependentUpon>StaffManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestRoomCardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Rooms.resx">
       <DependentUpon>Rooms.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StaffManagerForm.resx">
+      <DependentUpon>StaffManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

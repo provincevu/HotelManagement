@@ -150,6 +150,7 @@
             this.logOutBtn.TabIndex = 6;
             this.logOutBtn.Text = "Đăng xuất";
             this.logOutBtn.UseVisualStyleBackColor = true;
+            this.logOutBtn.Click += new System.EventHandler(this.logOutBtn_Click);
             // 
             // label1
             // 

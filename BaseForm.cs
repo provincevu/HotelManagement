@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace HotelManagement
 {
@@ -9,11 +8,14 @@ namespace HotelManagement
     {
         // Biến lưu menu đang chọn
         private ToolStripMenuItem selectedMenuItem = null;
+        private string userName; // Lưu userName để kiểm tra quyền
 
         public BaseForm(string username)
         {
             InitializeComponent();
             DataBase.InitializeDatabase();
+
+            userName = username;
 
             // Gán custom renderer cho MenuStrip để đổi màu, font menu động
             menuStrip1.Renderer = new MyMenuRenderer(() => selectedMenuItem);
@@ -69,12 +71,34 @@ namespace HotelManagement
                 ShowUserControl(new Rooms());
             else if (selectedMenuItem == customerMenu)
                 ShowUserControl(new CustomerManagerForm());
-            //else if (selectedMenuItem == staffMenu)
-            //    ShowUserControl(new Staffs());
+            else if (selectedMenuItem == staffMenu)
+            {
+                // Chặn truy cập nếu không phải super admin
+                if (!DataBase.IsSuperAdmin(userName))
+                {
+                    MessageBox.Show("Bạn không có quyền truy cập chức năng quản lý nhân sự!", "Từ chối truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // Chọn lại menu cũ (ví dụ về lại phòng hoặc dashboard)
+                    selectedMenuItem = roomManageMenuItem;
+                    menuStrip1.Invalidate();
+                    ShowUserControl(new Rooms());
+                }
+                else
+                {
+                    ShowUserControl(new StaffManagerForm());
+                }
+            }
             //else if (selectedMenuItem == billMenu)
             //    ShowUserControl(new Bills());
             //else if (selectedMenuItem == dashboardMenu)
             //    ShowUserControl(new Dashboard());
+        }
+
+        private void logOutBtn_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var login = new LoginForm();
+            login.Show();
+            this.Dispose();
         }
     }
 
