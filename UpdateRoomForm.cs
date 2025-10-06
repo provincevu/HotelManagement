@@ -273,13 +273,4 @@ namespace HotelManagement
         }
         public override string ToString() { return Text; }
     }
-
-    // Model khách hàng
-    public class CustomerModel
-    {
-        public string Name { get; set; }
-        public string Phone { get; set; }
-        public int SexId { get; set; }
-        public string Birth { get; set; }
-    }
 }

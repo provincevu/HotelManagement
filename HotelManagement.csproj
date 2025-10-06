@@ -96,6 +96,13 @@
     <Compile Include="BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomerManagerForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomerManagerForm.Designer.cs">
+      <DependentUpon>CustomerManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomerModel.cs" />
     <Compile Include="DataBase.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
@@ -144,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomerManagerForm.resx">
+      <DependentUpon>CustomerManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

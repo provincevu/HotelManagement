@@ -53,9 +53,10 @@ namespace HotelManagement
         /// </summary>
         private void ShowUserControl(UserControl control)
         {
+            control.Dock = DockStyle.Fill; // Đặt trước khi add
             splitContainer1.Panel2.Controls.Clear();
-            control.Dock = DockStyle.Fill;
             splitContainer1.Panel2.Controls.Add(control);
+            control.BringToFront();
         }
 
         // Xử lý khi click menu: đổi menu được chọn và refresh lại menu + show UC
@@ -66,8 +67,8 @@ namespace HotelManagement
 
             if (selectedMenuItem == roomManageMenuItem)
                 ShowUserControl(new Rooms());
-            //else if (selectedMenuItem == customerMenu)
-            //    ShowUserControl(new Customers());
+            else if (selectedMenuItem == customerMenu)
+                ShowUserControl(new CustomerManagerForm());
             //else if (selectedMenuItem == staffMenu)
             //    ShowUserControl(new Staffs());
             //else if (selectedMenuItem == billMenu)

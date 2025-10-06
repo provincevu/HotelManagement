@@ -86,6 +86,22 @@ namespace HotelManagement
                     cmd.ExecuteNonQuery();
                 }
 
+                // thêm các giá trị mặc định
+                string checkSexSql = "SELECT COUNT(*) FROM Sex";
+                using (var cmd = new SQLiteCommand(checkSexSql, con))
+                {
+                    long count = (long)cmd.ExecuteScalar();
+                    if (count == 0)
+                    {
+                        string insertSex = @"INSERT INTO Sex(SexName) VALUES
+                            ('Nam'), ('Nữ'), ('Khác')";
+                        using (var insertCmd = new SQLiteCommand(insertSex, con))
+                        {
+                            insertCmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
                 // Customers (Phone PK)
                 string sqlCustomers = @"CREATE TABLE IF NOT EXISTS Customers (
                     Name TEXT NOT NULL,
