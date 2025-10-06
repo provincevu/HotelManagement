@@ -7,7 +7,7 @@ namespace HotelManagement
 {
     public static class DataBase
     {
-        private static string dbFile = "hotel1.db";
+        private static string dbFile = "hotel.db";
         private static string connString = $"Data Source={dbFile};Version=3;";
 
         // Bật foreign key constraints cho mọi kết nối
@@ -145,6 +145,22 @@ namespace HotelManagement
                         ON DELETE CASCADE
                 )";
                 using (var cmd = new SQLiteCommand(sqlInvoices, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                string sqlRoomCustomers = @"CREATE TABLE IF NOT EXISTS RoomCustomers (
+                    RoomId INTEGER NOT NULL,
+                    CustomerPhone TEXT NOT NULL,
+                    PRIMARY KEY (RoomId, CustomerPhone),
+                    FOREIGN KEY(RoomId) REFERENCES Rooms(Id)
+                        ON UPDATE CASCADE
+                        ON DELETE CASCADE,
+                    FOREIGN KEY(CustomerPhone) REFERENCES Customers(Phone)
+                        ON UPDATE CASCADE
+                        ON DELETE CASCADE
+                )";
+                using (var cmd = new SQLiteCommand(sqlRoomCustomers, con))
                 {
                     cmd.ExecuteNonQuery();
                 }

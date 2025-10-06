@@ -43,13 +43,19 @@ namespace HotelManagement
                 RoomCardControl card = new RoomCardControl();
                 card.Margin = new Padding(15);
                 card.SetRoomInfo(room.Name, room.Status, room.RoomType, room.Price);
+
+                // Sửa tại đây: mở UpdateRoomForm khi bấm Sửa
                 card.EditClicked += (s, e) =>
                 {
-                    // Xử lý sửa phòng (ví dụ mở dialog sửa, cập nhật CSDL và reload)
-                    MessageBox.Show($"Sửa: {room.Name}");
-                    // Sau khi sửa, gọi lại LoadRoomsFromDatabase();
-                    LoadRoomsFromDatabase();
+                    using (var updateRoomForm = new UpdateRoomForm(room.Id))
+                    {
+                        if (updateRoomForm.ShowDialog() == DialogResult.OK)
+                        {
+                            LoadRoomsFromDatabase();
+                        }
+                    }
                 };
+
                 card.DeleteClicked += (s, e) =>
                 {
                     if (MessageBox.Show($"Xóa phòng {room.Name}?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)

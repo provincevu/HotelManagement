@@ -127,6 +127,12 @@
     <Compile Include="TestRoomCardForm.Designer.cs">
       <DependentUpon>TestRoomCardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UpdateRoomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateRoomForm.Designer.cs">
+      <DependentUpon>UpdateRoomForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AddRoomForm.resx">
       <DependentUpon>AddRoomForm.cs</DependentUpon>
     </EmbeddedResource>
