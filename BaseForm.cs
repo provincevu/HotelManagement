@@ -24,7 +24,7 @@ namespace HotelManagement
             roomManageMenuItem.Click += MenuItem_Click;
             customerMenu.Click += MenuItem_Click;
             staffMenu.Click += MenuItem_Click;
-            billMenu.Click += MenuItem_Click;
+            invoiceMenu.Click += MenuItem_Click;
             dashboardMenu.Click += MenuItem_Click;
 
             // Mặc định chọn menu "Quản lý phòng"
@@ -87,8 +87,8 @@ namespace HotelManagement
                     ShowUserControl(new StaffManagerForm());
                 }
             }
-            //else if (selectedMenuItem == billMenu)
-            //    ShowUserControl(new Bills());
+            else if (selectedMenuItem == invoiceMenu)
+                ShowUserControl(new InvoiceManagerForm());
             //else if (selectedMenuItem == dashboardMenu)
             //    ShowUserControl(new Dashboard());
         }

@@ -382,9 +382,9 @@ namespace HotelManagement
             {
                 con.Open();
                 EnableForeignKeys(con);
-                string sql = @"SELECT Invoices.*, Bookings.RoomId, Bookings.CustomerPhone
-                       FROM Invoices
-                       JOIN Bookings ON Invoices.BookingId = Bookings.Id";
+                string sql = @"SELECT Invoices.*, Rooms.RoomNumber
+                    FROM Invoices
+                    JOIN Rooms ON Invoices.RoomId = Rooms.Id";
                 using (var cmd = new SQLiteCommand(sql, con))
                 using (var reader = cmd.ExecuteReader())
                 {

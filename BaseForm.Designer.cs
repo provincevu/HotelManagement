@@ -33,7 +33,7 @@
             this.roomManageMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.customerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.staffMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.billMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.invoiceMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.dashboardMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.timeLabel = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@
             this.roomManageMenuItem,
             this.customerMenu,
             this.staffMenu,
-            this.billMenu,
+            this.invoiceMenu,
             this.dashboardMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -92,13 +92,13 @@
             this.staffMenu.Size = new System.Drawing.Size(221, 72);
             this.staffMenu.Text = "Quản lý nhân viên";
             // 
-            // billMenu
+            // invoiceMenu
             // 
-            this.billMenu.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.billMenu.Name = "billMenu";
-            this.billMenu.Padding = new System.Windows.Forms.Padding(20);
-            this.billMenu.Size = new System.Drawing.Size(221, 72);
-            this.billMenu.Text = "Quán lý hóa đơn";
+            this.invoiceMenu.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.invoiceMenu.Name = "invoiceMenu";
+            this.invoiceMenu.Padding = new System.Windows.Forms.Padding(20);
+            this.invoiceMenu.Size = new System.Drawing.Size(221, 72);
+            this.invoiceMenu.Text = "Quán lý hóa đơn";
             // 
             // dashboardMenu
             // 
@@ -230,7 +230,7 @@
         private System.Windows.Forms.ToolStripMenuItem roomManageMenuItem;
         private System.Windows.Forms.ToolStripMenuItem customerMenu;
         private System.Windows.Forms.ToolStripMenuItem staffMenu;
-        private System.Windows.Forms.ToolStripMenuItem billMenu;
+        private System.Windows.Forms.ToolStripMenuItem invoiceMenu;
         private System.Windows.Forms.ToolStripMenuItem dashboardMenu;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PictureBox pictureBox2;

@@ -78,6 +78,12 @@
     <Compile Include="Invoice\InvoiceForm.Designer.cs">
       <DependentUpon>InvoiceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Invoice\InvoiceManagerForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Invoice\InvoiceManagerForm.Designer.cs">
+      <DependentUpon>InvoiceManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="model\InvoiceModel.cs" />
     <Compile Include="staff\AddRoleForm.cs">
       <SubType>Form</SubType>
@@ -161,6 +167,9 @@
     </Compile>
     <EmbeddedResource Include="Invoice\InvoiceForm.resx">
       <DependentUpon>InvoiceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Invoice\InvoiceManagerForm.resx">
+      <DependentUpon>InvoiceManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="room\AddRoomForm.resx">
       <DependentUpon>AddRoomForm.cs</DependentUpon>
