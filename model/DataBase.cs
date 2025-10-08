@@ -51,6 +51,9 @@ namespace HotelManagement
                     cmd.ExecuteNonQuery();
                 }
 
+                // --- Thêm giá trị mặc định cho RoomStatuses ---
+                AddDefaultRoomStatuses(con);
+
                 // Roles
                 string sqlRoles = @"CREATE TABLE IF NOT EXISTS Roles (
                     RoleId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -153,18 +156,22 @@ namespace HotelManagement
                 // Invoices (BookingId FK)
                 string sqlInvoices = @"CREATE TABLE IF NOT EXISTS Invoices (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    BookingId INTEGER NOT NULL,
-                    TotalAmount REAL NOT NULL,
-                    CreatedDate TEXT NOT NULL,
-                    FOREIGN KEY(BookingId) REFERENCES Bookings(Id)
-                        ON UPDATE CASCADE
-                        ON DELETE CASCADE
+                    RoomId INTEGER NOT NULL,
+                    StaffCheckOut TEXT,           
+                    CustomerCheckOut TEXT,        
+                    TotalPrice REAL,                
+                    CheckInDate TEXT NOT NULL,      -- Luôn có (ngày nhận phòng)
+                    CheckOutDate TEXT,             
+                    FOREIGN KEY(RoomId) REFERENCES Rooms(Id),
+                    FOREIGN KEY(StaffCheckOut) REFERENCES Staff(UserName),
+                    FOREIGN KEY(CustomerCheckOut) REFERENCES Customers(Phone)
                 )";
                 using (var cmd = new SQLiteCommand(sqlInvoices, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
+                // RoomCustomers
                 string sqlRoomCustomers = @"CREATE TABLE IF NOT EXISTS RoomCustomers (
                     RoomId INTEGER NOT NULL,
                     CustomerPhone TEXT NOT NULL,
@@ -766,6 +773,35 @@ namespace HotelManagement
                 }
             }
         }
+        public static InvoiceModel GetInvoiceByRoomId(int roomId)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "SELECT * FROM Invoices WHERE RoomId = @roomId ORDER BY Id DESC LIMIT 1";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@roomId", roomId);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new InvoiceModel
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                RoomId = Convert.ToInt32(reader["RoomId"]),
+                                StaffCheckOut = reader["StaffCheckOut"]?.ToString(),
+                                CustomerCheckOut = reader["CustomerCheckOut"]?.ToString(),
+                                TotalPrice = reader["TotalPrice"] != DBNull.Value ? Convert.ToDouble(reader["TotalPrice"]) : 0,
+                                CheckInDate = reader["CheckInDate"]?.ToString(),
+                                CheckOutDate = reader["CheckOutDate"]?.ToString()
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
 
         // ---- LOGIN ----
 
@@ -807,6 +843,100 @@ namespace HotelManagement
         public static bool RegisterStaff(string username, string password, string name, string identityNumber, string phone)
         {
             return AddStaff(username, password, name, identityNumber, phone, null);
+        }
+
+        /// Hàm thêm 3 trạng thái phòng mặc định nếu chưa tồn tại: "trống", "đang ở", "đang bảo trì"
+        private static void AddDefaultRoomStatuses(SQLiteConnection con)
+        {
+            string checkSql = "SELECT COUNT(*) FROM RoomStatuses";
+            using (var cmd = new SQLiteCommand(checkSql, con))
+            {
+                long count = (long)cmd.ExecuteScalar();
+                if (count == 0)
+                {
+                    string insertStatuses = @"INSERT INTO RoomStatuses(StatusName) VALUES
+                        ('trống'), ('đang ở'), ('đang bảo trì')";
+                    using (var insertCmd = new SQLiteCommand(insertStatuses, con))
+                    {
+                        insertCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        // tạo Invoice
+        public static void AddInvoice(int roomId, DateTime checkInDate)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string insertInvoice = @"INSERT INTO Invoices (RoomId, CheckInDate)
+                                 VALUES (@roomId, @checkInDate)";
+                using (var cmd = new SQLiteCommand(insertInvoice, con))
+                {
+                    cmd.Parameters.AddWithValue("@roomId", roomId);
+                    cmd.Parameters.AddWithValue("@checkInDate", checkInDate.ToString("yyyy-MM-dd HH:mm:ss"));
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // update invoice
+        public static bool UpdateInvoiceByRoomId(int roomId, string staffCheckOut, string customerCheckOut, double totalPrice, string checkOutDate)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = @"UPDATE Invoices 
+                       SET StaffCheckOut = @staff, 
+                           CustomerCheckOut = @customer, 
+                           TotalPrice = @totalPrice, 
+                           CheckOutDate = @checkOutDate
+                       WHERE RoomId = @roomId AND CheckOutDate IS NULL";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@staff", staffCheckOut);
+                    cmd.Parameters.AddWithValue("@customer", customerCheckOut);
+                    cmd.Parameters.AddWithValue("@totalPrice", totalPrice);
+                    cmd.Parameters.AddWithValue("@checkOutDate", checkOutDate);
+                    cmd.Parameters.AddWithValue("@roomId", roomId);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public static double GetRoomPrice(int roomId)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = @"SELECT RoomTypes.Price
+                       FROM Rooms
+                       JOIN RoomTypes ON Rooms.RoomTypeId = RoomTypes.Id
+                       WHERE Rooms.Id = @roomId";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@roomId", roomId);
+                    var result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToDouble(result) : 0;
+                }
+            }
+        }
+
+        public static string GetRoomNumber(int roomId)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "SELECT RoomNumber FROM Rooms WHERE Id = @id";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", roomId);
+                    var result = cmd.ExecuteScalar();
+                    return result != null ? result.ToString() : "";
+                }
+            }
         }
     }
 }

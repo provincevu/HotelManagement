@@ -38,7 +38,7 @@ namespace HotelManagement
         public void SetRoomInfo(string roomName, string status, string roomType, double price)
         {
             lblRoomName.Text = "Phòng " + roomName;
-            lblStatus.Text = "Trạng thái: " + status;
+            lblStatusurf.Text = "Trạng thái: " + status;
             lblRoomType.Text = "Loại: " + roomType;
             lblPrice.Text = "Giá: " + price.ToString("N0") + " VND";
 

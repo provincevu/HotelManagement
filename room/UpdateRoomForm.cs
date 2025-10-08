@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace HotelManagement
 {
@@ -18,7 +19,11 @@ namespace HotelManagement
             pnlNewPerson.Enabled = false;
             LoadExistingPersons();
             LoadRoomCustomerList();
+            LoadRoomStatuses();
             lblRoomInfo.Text = "Phòng: " + GetRoomNumber(roomId);
+
+            // Khi mở form, cập nhật trạng thái phòng
+            AutoUpdateRoomStatus(RoomId);
         }
 
         // Lấy số phòng từ RoomId
@@ -90,6 +95,67 @@ namespace HotelManagement
             if (cbExistingPerson.Items.Count > 0) cbExistingPerson.SelectedIndex = 0;
         }
 
+        // Hiển thị trạng thái phòng và cho phép chuyển trạng thái
+        private void LoadRoomStatuses()
+        {
+            cbStatusurf.Items.Clear();
+            var statuses = DataBase.GetAllRoomStatuses();
+            foreach (var status in statuses)
+            {
+                cbStatusurf.Items.Add(new ComboBoxItem(status.StatusName, status.Id));
+            }
+            if (cbStatusurf.Items.Count > 0)
+            {
+                cbStatusurf.SelectedIndex = 0;
+                int currentStatusId = GetCurrentRoomStatusId();
+                foreach (ComboBoxItem item in cbStatusurf.Items)
+                {
+                    if ((int)item.Value == currentStatusId)
+                    {
+                        cbStatusurf.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private int GetCurrentRoomStatusId()
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "SELECT StatusId FROM Rooms WHERE Id=@id";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@id", RoomId);
+                    var result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToInt32(result) : -1;
+                }
+            }
+        }
+
+        private void btnChangeStatusupdate_Click(object sender, EventArgs e)
+        {
+            if (cbStatusurf.SelectedItem == null)
+            {
+                MessageBox.Show("Chọn trạng thái phòng!");
+                return;
+            }
+            int statusId = (int)((ComboBoxItem)cbStatusurf.SelectedItem).Value;
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "UPDATE Rooms SET StatusId=@sid WHERE Id=@id";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@sid", statusId);
+                    cmd.Parameters.AddWithValue("@id", RoomId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            MessageBox.Show("Đã cập nhật trạng thái phòng!");
+        }
+
         private void rbExistingPerson_CheckedChanged(object sender, EventArgs e)
         {
             cbExistingPerson.Enabled = rbExistingPerson.Checked;
@@ -108,11 +174,11 @@ namespace HotelManagement
                 }
                 string phone = personItem.Value.ToString();
 
-                // Thêm khách vào phòng (N-N)
                 if (AddCustomerToRoom(RoomId, phone))
                 {
                     MessageBox.Show("Đã thêm người vào phòng!");
                     LoadRoomCustomerList();
+                    AutoUpdateRoomStatus(RoomId);
                 }
                 else
                 {
@@ -132,7 +198,6 @@ namespace HotelManagement
                     return;
                 }
 
-                // Thêm khách mới vào bảng Customers nếu chưa có
                 AddOrUpdateCustomer(new CustomerModel
                 {
                     Name = name,
@@ -141,11 +206,11 @@ namespace HotelManagement
                     Birth = birth
                 });
 
-                // Thêm vào bảng N-N
                 if (AddCustomerToRoom(RoomId, phone))
                 {
                     MessageBox.Show("Đã thêm khách mới vào phòng!");
                     LoadRoomCustomerList();
+                    AutoUpdateRoomStatus(RoomId);
                 }
                 else
                 {
@@ -166,6 +231,52 @@ namespace HotelManagement
             {
                 MessageBox.Show("Đã xóa khách khỏi phòng!");
                 LoadRoomCustomerList();
+
+                // Sau khi xóa, kiểm tra số khách còn lại
+                int count = GetRoomCustomerCount(RoomId);
+                if (count == 0)
+                {
+                    // Nếu không còn ai, cập nhật trạng thái về "trống"
+                    SetRoomStatusByName(RoomId, "trống");
+
+                    // --- Điền thông tin hóa đơn ---
+                    // Lấy staff đang đăng nhập (ví dụ)
+                    string staffCheckOut = "admin"; // Thay bằng biến thực tế (CurrentStaffUserName)
+                                                    // Customer cuối cùng rời phòng
+                    string customerCheckOut = phone;
+                    // Lấy hóa đơn hiện tại
+                    var invoice = DataBase.GetInvoiceByRoomId(RoomId);
+                    double totalPrice = 0;
+                    string checkOutDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    if (invoice != null)
+                    {
+                        double price = DataBase.GetRoomPrice(RoomId);
+                        DateTime checkIn;
+                        if (DateTime.TryParse(invoice.CheckInDate, out checkIn))
+                        {
+                            DateTime checkOut = DateTime.Now;
+                            // Tính số giờ, chỉ cần dư 1 giây cũng lên 1 giờ
+                            double totalHours = Math.Ceiling((checkOut - checkIn).TotalHours);
+                            totalPrice = price * totalHours;
+                            totalPrice = Math.Round(totalPrice, 0); 
+                        }
+                        else
+                        {
+                            totalPrice = 0;
+                        }
+                    }
+
+                    // Sửa thông tin hóa đơn
+                    DataBase.UpdateInvoiceByRoomId(RoomId, staffCheckOut, customerCheckOut, totalPrice, checkOutDate);
+
+                    // Hiện form xác nhận hóa đơn
+                    ShowInvoiceForm();
+                }
+                else
+                {
+                    // Nếu còn khách, cập nhật trạng thái về "đang ở"
+                    SetRoomStatusByName(RoomId, "đang ở");
+                }
             }
             else
             {
@@ -184,6 +295,22 @@ namespace HotelManagement
             using (var con = new SQLiteConnection(connString))
             {
                 con.Open();
+                // Kiểm tra số khách hiện tại trong phòng
+                string countSql = "SELECT COUNT(*) FROM RoomCustomers WHERE RoomId=@rid";
+                int customerCount;
+                using (var cmdCount = new SQLiteCommand(countSql, con))
+                {
+                    cmdCount.Parameters.AddWithValue("@rid", roomId);
+                    customerCount = Convert.ToInt32(cmdCount.ExecuteScalar());
+                }
+
+                // Nếu là khách đầu tiên thì tạo hóa đơn
+                if (customerCount == 0)
+                {
+                    DataBase.AddInvoice(roomId, DateTime.Now);
+                }
+
+                // Kiểm tra trùng khách
                 string checkSql = "SELECT COUNT(*) FROM RoomCustomers WHERE RoomId=@rid AND CustomerPhone=@cphone";
                 using (var cmd = new SQLiteCommand(checkSql, con))
                 {
@@ -220,7 +347,81 @@ namespace HotelManagement
             }
         }
 
-        // Cập nhật thông tin khách (trong bảng Customers)
+        // Lấy số khách hiện tại trong phòng
+        private int GetRoomCustomerCount(int roomId)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "SELECT COUNT(*) FROM RoomCustomers WHERE RoomId=@rid";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@rid", roomId);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
+        // Đặt trạng thái phòng theo tên StatusName
+        private void SetRoomStatusByName(int roomId, string statusName)
+        {
+            int statusId = GetStatusIdByName(statusName);
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "UPDATE Rooms SET StatusId=@sid WHERE Id=@rid";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@sid", statusId);
+                    cmd.Parameters.AddWithValue("@rid", roomId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Hiển thị bảng hóa đơn (chỉ mở form, bạn thay bằng logic thực tế của bạn)
+        private void ShowInvoiceForm()
+        {
+            // Lấy hóa đơn cho phòng này
+            var invoice = DataBase.GetInvoiceByRoomId(RoomId);
+            if (invoice != null)
+            {
+                var frm = new InvoiceForm();
+                frm.ShowInvoice(invoice); 
+            }
+            else
+            {
+                MessageBox.Show("Không tìm thấy hóa đơn cho phòng này!");
+            }
+        }
+
+        // Cập nhật trạng thái phòng tự động khi thêm khách
+        private void AutoUpdateRoomStatus(int roomId)
+        {
+            int customerCount = GetRoomCustomerCount(roomId);
+
+            if (customerCount > 0)
+                SetRoomStatusByName(roomId, "đang ở");
+            else
+                SetRoomStatusByName(roomId, "trống");
+        }
+
+        // Hàm lấy Id trạng thái từ tên
+        private int GetStatusIdByName(string statusName)
+        {
+            using (var con = new SQLiteConnection(connString))
+            {
+                con.Open();
+                string sql = "SELECT Id FROM RoomStatuses WHERE StatusName=@name";
+                using (var cmd = new SQLiteCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@name", statusName);
+                    var result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToInt32(result) : 0;
+                }
+            }
+        }
+
         private void AddOrUpdateCustomer(CustomerModel customer)
         {
             using (var con = new SQLiteConnection(connString))
@@ -259,18 +460,18 @@ namespace HotelManagement
                 }
             }
         }
-    }
 
-    // Helper class cho ComboBox
-    public class ComboBoxItem
-    {
-        public string Text { get; set; }
-        public object Value { get; set; }
-        public ComboBoxItem(string text, object val)
+        // Helper class cho ComboBox
+        private class ComboBoxItem
         {
-            Text = text;
-            Value = val;
+            public string Text { get; set; }
+            public object Value { get; set; }
+            public ComboBoxItem(string text, object value)
+            {
+                Text = text;
+                Value = value;
+            }
+            public override string ToString() => Text;
         }
-        public override string ToString() { return Text; }
     }
 }

@@ -4,7 +4,7 @@
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblRoomName;
-        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label lblStatusurf;
         private System.Windows.Forms.Label lblRoomType;
         private System.Windows.Forms.Label lblPrice;
         private System.Windows.Forms.Button btnEdit;
@@ -19,7 +19,7 @@
         private void InitializeComponent()
         {
             this.lblRoomName = new System.Windows.Forms.Label();
-            this.lblStatus = new System.Windows.Forms.Label();
+            this.lblStatusurf = new System.Windows.Forms.Label();
             this.lblRoomType = new System.Windows.Forms.Label();
             this.lblPrice = new System.Windows.Forms.Label();
             this.btnEdit = new System.Windows.Forms.Button();
@@ -35,13 +35,13 @@
             this.lblRoomName.Size = new System.Drawing.Size(0, 32);
             this.lblRoomName.TabIndex = 0;
             // 
-            // lblStatus
+            // lblStatusurf
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(20, 40);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 22);
-            this.lblStatus.TabIndex = 1;
+            this.lblStatusurf.AutoSize = true;
+            this.lblStatusurf.Location = new System.Drawing.Point(20, 40);
+            this.lblStatusurf.Name = "lblStatusurf";
+            this.lblStatusurf.Size = new System.Drawing.Size(0, 22);
+            this.lblStatusurf.TabIndex = 1;
             // 
             // lblRoomType
             // 
@@ -85,7 +85,7 @@
             // 
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.lblRoomName);
-            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.lblStatusurf);
             this.Controls.Add(this.lblRoomType);
             this.Controls.Add(this.lblPrice);
             this.Controls.Add(this.btnEdit);

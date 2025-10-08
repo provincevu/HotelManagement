@@ -39,6 +39,10 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnRemoveCustomer = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblStatusurf = new System.Windows.Forms.Label();
+            this.cbStatusurf = new System.Windows.Forms.ComboBox();
+            this.btnChangeStatusupdate = new System.Windows.Forms.Button();
+
             this.grpPerson.SuspendLayout();
             this.pnlNewPerson.SuspendLayout();
             this.SuspendLayout();
@@ -272,18 +276,50 @@
             this.btnCancel.Text = "HỦY";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+
+            // lblStatusurf
+            this.lblStatusurf = new System.Windows.Forms.Label();
+            this.lblStatusurf.AutoSize = true;
+            this.lblStatusurf.Location = new System.Drawing.Point(30, 470);
+            this.lblStatusurf.Name = "lblStatusurf";
+            this.lblStatusurf.Size = new System.Drawing.Size(100, 15);
+            this.lblStatusurf.TabIndex = 20;
+            this.lblStatusurf.Text = "Trạng thái phòng:";
+
+            // cbStatusurf
+            this.cbStatusurf = new System.Windows.Forms.ComboBox();
+            this.cbStatusurf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStatusurf.Location = new System.Drawing.Point(135, 466);
+            this.cbStatusurf.Name = "cbStatusurf";
+            this.cbStatusurf.Size = new System.Drawing.Size(110, 23);
+            this.cbStatusurf.TabIndex = 21;
+
+            // btnChangeStatusupdate
+            this.btnChangeStatusupdate = new System.Windows.Forms.Button();
+            this.btnChangeStatusupdate.Location = new System.Drawing.Point(250, 466);
+            this.btnChangeStatusupdate.Name = "btnChangeStatusupdate";
+            this.btnChangeStatusupdate.Size = new System.Drawing.Size(110, 23);
+            this.btnChangeStatusupdate.TabIndex = 22;
+            this.btnChangeStatusupdate.Text = "Đổi trạng thái";
+            this.btnChangeStatusupdate.UseVisualStyleBackColor = true;
+            this.btnChangeStatusupdate.Click += new System.EventHandler(this.btnChangeStatusupdate_Click);
+
             // 
             // UpdateRoomForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 480);
+            this.ClientSize = new System.Drawing.Size(464, 510);
             this.Controls.Add(this.lvCustomers);
             this.Controls.Add(this.btnRemoveCustomer);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.grpPerson);
             this.Controls.Add(this.lblRoomInfo);
+            this.Controls.Add(this.lblStatusurf);
+            this.Controls.Add(this.cbStatusurf);
+            this.Controls.Add(this.btnChangeStatusupdate);
+
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -300,6 +336,7 @@
 
         #endregion
 
+        // KHÔNG KHAI BÁO LẠI lblStatusurf, cbStatusurf, btnChangeStatusupdate ở bất cứ đâu ngoài đây!
         private System.Windows.Forms.Label lblRoomInfo;
         private System.Windows.Forms.GroupBox grpPerson;
         private System.Windows.Forms.RadioButton rbExistingPerson;
@@ -324,5 +361,9 @@
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRemoveCustomer;
         private System.Windows.Forms.Button btnCancel;
+
+        private System.Windows.Forms.Label lblStatusurf;
+        private System.Windows.Forms.ComboBox cbStatusurf;
+        private System.Windows.Forms.Button btnChangeStatusupdate;
     }
 }

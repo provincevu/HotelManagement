@@ -72,28 +72,35 @@
     <Compile Include="abc.Designer.cs">
       <DependentUpon>abc.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoleForm.cs">
+    <Compile Include="Invoice\InvoiceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoleForm.Designer.cs">
+    <Compile Include="Invoice\InvoiceForm.Designer.cs">
+      <DependentUpon>InvoiceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="model\InvoiceModel.cs" />
+    <Compile Include="staff\AddRoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="staff\AddRoleForm.Designer.cs">
       <DependentUpon>AddRoleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoomForm.cs">
+    <Compile Include="room\AddRoomForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoomForm.Designer.cs">
+    <Compile Include="room\AddRoomForm.Designer.cs">
       <DependentUpon>AddRoomForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoomStatusForm.cs">
+    <Compile Include="room\AddRoomStatusForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoomStatusForm.Designer.cs">
+    <Compile Include="room\AddRoomStatusForm.Designer.cs">
       <DependentUpon>AddRoomStatusForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoomTypeForm.cs">
+    <Compile Include="room\AddRoomTypeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoomTypeForm.Designer.cs">
+    <Compile Include="room\AddRoomTypeForm.Designer.cs">
       <DependentUpon>AddRoomTypeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseForm.cs">
@@ -102,72 +109,75 @@
     <Compile Include="BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomerManagerForm.cs">
+    <Compile Include="customer\CustomerManagerForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CustomerManagerForm.Designer.cs">
+    <Compile Include="customer\CustomerManagerForm.Designer.cs">
       <DependentUpon>CustomerManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomerModel.cs" />
-    <Compile Include="DataBase.cs" />
-    <Compile Include="Login.cs">
+    <Compile Include="model\CustomerModel.cs" />
+    <Compile Include="model\DataBase.cs" />
+    <Compile Include="staff\Login.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login.Designer.cs">
+    <Compile Include="staff\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Register.cs" />
-    <Compile Include="Register.Designer.cs">
+    <Compile Include="model\Register.cs" />
+    <Compile Include="model\Register.Designer.cs">
       <DependentUpon>Register.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomCardControl.cs">
+    <Compile Include="room\RoomCardControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RoomCardControl.Designer.cs">
+    <Compile Include="room\RoomCardControl.Designer.cs">
       <DependentUpon>RoomCardControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Rooms.cs">
+    <Compile Include="room\Rooms.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Rooms.Designer.cs">
+    <Compile Include="room\Rooms.Designer.cs">
       <DependentUpon>Rooms.cs</DependentUpon>
     </Compile>
-    <Compile Include="StaffManagerForm.cs">
+    <Compile Include="staff\StaffManagerForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StaffManagerForm.Designer.cs">
+    <Compile Include="staff\StaffManagerForm.Designer.cs">
       <DependentUpon>StaffManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TestRoomCardForm.cs">
+    <Compile Include="room\TestRoomCardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TestRoomCardForm.Designer.cs">
+    <Compile Include="room\TestRoomCardForm.Designer.cs">
       <DependentUpon>TestRoomCardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UpdateRoomForm.cs">
+    <Compile Include="room\UpdateRoomForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpdateRoomForm.Designer.cs">
+    <Compile Include="room\UpdateRoomForm.Designer.cs">
       <DependentUpon>UpdateRoomForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AddRoomForm.resx">
+    <EmbeddedResource Include="Invoice\InvoiceForm.resx">
+      <DependentUpon>InvoiceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="room\AddRoomForm.resx">
       <DependentUpon>AddRoomForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddRoomStatusForm.resx">
+    <EmbeddedResource Include="room\AddRoomStatusForm.resx">
       <DependentUpon>AddRoomStatusForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddRoomTypeForm.resx">
+    <EmbeddedResource Include="room\AddRoomTypeForm.resx">
       <DependentUpon>AddRoomTypeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomerManagerForm.resx">
+    <EmbeddedResource Include="customer\CustomerManagerForm.resx">
       <DependentUpon>CustomerManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
+    <EmbeddedResource Include="staff\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -180,16 +190,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Register.resx">
+    <EmbeddedResource Include="model\Register.resx">
       <DependentUpon>Register.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RoomCardControl.resx">
+    <EmbeddedResource Include="room\RoomCardControl.resx">
       <DependentUpon>RoomCardControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Rooms.resx">
+    <EmbeddedResource Include="room\Rooms.resx">
       <DependentUpon>Rooms.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StaffManagerForm.resx">
+    <EmbeddedResource Include="staff\StaffManagerForm.resx">
       <DependentUpon>StaffManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
@@ -218,6 +228,7 @@
   <ItemGroup>
     <None Include="Resources\notification.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
