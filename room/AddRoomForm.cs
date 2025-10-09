@@ -45,9 +45,7 @@ namespace HotelManagement
                 comboBoxStatus.SelectedIndex = 0;
         }
 
-        /// <summary>
-        /// Đảm bảo ép kiểu ID an toàn cho mọi trường hợp: string, int, long, v.v.
-        /// </summary>
+
         private int ParseId(object idObj)
         {
             if (idObj == null || idObj is DBNull) return -1;
@@ -126,7 +124,6 @@ namespace HotelManagement
             }
         }
 
-        // Helper class for ComboBoxItem
         private class ComboBoxItem
         {
             public string Text { get; set; }

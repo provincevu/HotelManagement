@@ -25,7 +25,6 @@ namespace HotelManagement
             customerMenu.Click += MenuItem_Click;
             staffMenu.Click += MenuItem_Click;
             invoiceMenu.Click += MenuItem_Click;
-            dashboardMenu.Click += MenuItem_Click;
 
             // Mặc định chọn menu "Quản lý phòng"
             selectedMenuItem = roomManageMenuItem;
@@ -89,8 +88,6 @@ namespace HotelManagement
             }
             else if (selectedMenuItem == invoiceMenu)
                 ShowUserControl(new InvoiceManagerForm());
-            //else if (selectedMenuItem == dashboardMenu)
-            //    ShowUserControl(new Dashboard());
         }
 
         private void logOutBtn_Click(object sender, EventArgs e)
@@ -128,7 +125,6 @@ namespace HotelManagement
             var menuItem = e.Item as ToolStripMenuItem;
             bool isSelected = (menuItem != null && menuItem == getSelectedMenuItem());
 
-            // Chọn font và màu chữ
             Color textColor = isSelected ? Color.White : Color.RoyalBlue;
             Font font = isSelected
                 ? new Font(e.TextFont, FontStyle.Bold)

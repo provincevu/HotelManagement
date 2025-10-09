@@ -5,9 +5,27 @@ namespace HotelManagement
 {
     public partial class InvoiceManagerForm : UserControl
     {
+        private DateTime filterFrom;
+        private DateTime filterTo;
+
         public InvoiceManagerForm()
         {
             InitializeComponent();
+
+            // Giá trị mặc định cho bộ lọc là 1 tháng trước đến hôm nay
+            filterFrom = DateTime.Today.AddMonths(-1);
+            filterTo = DateTime.Today;
+
+            dtpFrom.Value = filterFrom;
+            dtpTo.Value = filterTo;
+
+            LoadInvoices();
+        }
+
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            filterFrom = dtpFrom.Value.Date;
+            filterTo = dtpTo.Value.Date;
             LoadInvoices();
         }
 
@@ -16,7 +34,6 @@ namespace HotelManagement
             dgvInvoices.Rows.Clear();
             dgvInvoices.Columns.Clear();
 
-            // Đảm bảo thứ tự cột khớp với thứ tự truyền vào Rows.Add
             dgvInvoices.Columns.Add("Id", "Mã hóa đơn");
             dgvInvoices.Columns.Add("Room", "Phòng");
             dgvInvoices.Columns.Add("Staff", "Nhân viên");
@@ -28,18 +45,27 @@ namespace HotelManagement
             var invoices = DataBase.GetAllInvoices();
             foreach (var invoice in invoices)
             {
-                dgvInvoices.Rows.Add(
-                    invoice.ContainsKey("Id") ? invoice["Id"] : "",
-                    invoice.ContainsKey("RoomNumber") ? invoice["RoomNumber"] :
-                        (invoice.ContainsKey("RoomId") ? invoice["RoomId"] : ""),
-                    invoice.ContainsKey("StaffCheckOut") ? invoice["StaffCheckOut"] : "",
-                    invoice.ContainsKey("CustomerCheckOut") ? invoice["CustomerCheckOut"] :
-                        (invoice.ContainsKey("CustomerPhone") ? invoice["CustomerPhone"] : ""),
-                    invoice.ContainsKey("TotalPrice") ? invoice["TotalPrice"] :
-                        (invoice.ContainsKey("TotalAmount") ? invoice["TotalAmount"] : ""),
-                    invoice.ContainsKey("CheckInDate") ? invoice["CheckInDate"] : "",
-                    invoice.ContainsKey("CheckOutDate") ? invoice["CheckOutDate"] : ""
-                );
+                // Lọc theo ngày nhận phòng (CheckInDate)
+                string checkInStr = invoice.ContainsKey("CheckInDate") ? invoice["CheckInDate"]?.ToString() : "";
+                DateTime checkIn;
+                bool validDate = DateTime.TryParse(checkInStr, out checkIn);
+
+                // Nếu CheckIn hợp lệ và nằm trong khoảng lọc thì hiển thị
+                if (validDate && checkIn.Date >= filterFrom && checkIn.Date <= filterTo)
+                {
+                    dgvInvoices.Rows.Add(
+                        invoice.ContainsKey("Id") ? invoice["Id"] : "",
+                        invoice.ContainsKey("RoomNumber") ? invoice["RoomNumber"] :
+                            (invoice.ContainsKey("RoomId") ? invoice["RoomId"] : ""),
+                        invoice.ContainsKey("StaffCheckOut") ? invoice["StaffCheckOut"] : "",
+                        invoice.ContainsKey("CustomerCheckOut") ? invoice["CustomerCheckOut"] :
+                            (invoice.ContainsKey("CustomerPhone") ? invoice["CustomerPhone"] : ""),
+                        invoice.ContainsKey("TotalPrice") ? invoice["TotalPrice"] :
+                            (invoice.ContainsKey("TotalAmount") ? invoice["TotalAmount"] : ""),
+                        checkInStr,
+                        invoice.ContainsKey("CheckOutDate") ? invoice["CheckOutDate"] : ""
+                    );
+                }
             }
             dgvInvoices.ReadOnly = true;
         }

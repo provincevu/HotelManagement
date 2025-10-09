@@ -34,7 +34,6 @@
             this.customerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.staffMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.invoiceMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.dashboardMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.timeLabel = new System.Windows.Forms.Label();
             this.logOutBtn = new System.Windows.Forms.Button();
@@ -60,8 +59,7 @@
             this.roomManageMenuItem,
             this.customerMenu,
             this.staffMenu,
-            this.invoiceMenu,
-            this.dashboardMenu});
+            this.invoiceMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(234, 763);
@@ -99,14 +97,6 @@
             this.invoiceMenu.Padding = new System.Windows.Forms.Padding(20);
             this.invoiceMenu.Size = new System.Drawing.Size(221, 72);
             this.invoiceMenu.Text = "Quán lý hóa đơn";
-            // 
-            // dashboardMenu
-            // 
-            this.dashboardMenu.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.dashboardMenu.Name = "dashboardMenu";
-            this.dashboardMenu.Padding = new System.Windows.Forms.Padding(20);
-            this.dashboardMenu.Size = new System.Drawing.Size(221, 72);
-            this.dashboardMenu.Text = "Báo cáo - Thống kê";
             // 
             // splitContainer1
             // 
@@ -231,7 +221,6 @@
         private System.Windows.Forms.ToolStripMenuItem customerMenu;
         private System.Windows.Forms.ToolStripMenuItem staffMenu;
         private System.Windows.Forms.ToolStripMenuItem invoiceMenu;
-        private System.Windows.Forms.ToolStripMenuItem dashboardMenu;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
